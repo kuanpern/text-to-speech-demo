@@ -1,3 +1,4 @@
+import os
 import requests
 import google.auth
 import google.auth.transport.requests
@@ -21,7 +22,13 @@ class GCPSpeechSynthesizer:
     def refresh_gcp_creds(self):
 
         # assume env var GOOGLE_APPLICATION_CREDENTIALS is already set
-        creds, project_id = google.auth.default()
+        # creds, project_id = google.auth.default()
+        credential_filepath = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
+        creds, project_id = google.auth.load_credentials_from_file(
+            credential_filepath, 
+            scopes=['https://www.googleapis.com/auth/cloud-platform']
+        ) # end google.auth.load_credentials_from_file
+
         auth_req = google.auth.transport.requests.Request()
         creds.refresh(auth_req)
 
